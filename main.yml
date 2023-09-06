@@ -1,0 +1,26 @@
+# .github/workflows/main.yml
+# CI/CD workflow 
+
+name: MNIST Pipeline
+on: push
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - run: pip install -r requirements.txt
+    - run: python notebooks/train.ipynb
+  evaluate:
+    needs: train
+    runs-on: ubuntu-latest 
+    steps:
+    - uses: actions/checkout@v2
+    - run: python notebooks/evaluate.py
+  deploy:
+    needs: evaluate
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build -t myimage .
+    - run: docker push myimage:latest

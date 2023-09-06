@@ -1,0 +1,21 @@
+# docker-compose.yml
+
+version: '3'
+services:
+
+  app:
+    build: .
+    ports: 
+     - "5000:5000"
+    volumes:
+     - ./app:/app
+
+  notebook:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    command: ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser", "--port=8888"]
+    ports:
+      - 8888:8888
